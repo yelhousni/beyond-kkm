@@ -1,0 +1,940 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Beyond Cheon–Kozaki–Kutsuma–Matsuo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#ECEEF0; --surface:#FAFBFC; --sunk:#E2E6EA;
+  --ink:#161A1F; --ink-mid:#3C4651; --ink-dim:#657280; --ink-faint:#8D98A4;
+  --rule:#CDD4DB; --rule-soft:#DFE4E9;
+  --fixed:#3D5A80; --fixed-soft:#DCE4EF;
+  --moves:#B5316B; --moves-soft:#F4DDE7;
+  --shadow:rgba(22,26,31,.09);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#13171B; --surface:#1A1F25; --sunk:#0E1216;
+    --ink:#E8ECF0; --ink-mid:#BAC4CE; --ink-dim:#8A95A1; --ink-faint:#646F7B;
+    --rule:#2C343C; --rule-soft:#232A31;
+    --fixed:#8FB0DC; --fixed-soft:#1E2A3A;
+    --moves:#E8799F; --moves-soft:#351E29;
+    --shadow:rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#13171B; --surface:#1A1F25; --sunk:#0E1216;
+  --ink:#E8ECF0; --ink-mid:#BAC4CE; --ink-dim:#8A95A1; --ink-faint:#646F7B;
+  --rule:#2C343C; --rule-soft:#232A31;
+  --fixed:#8FB0DC; --fixed-soft:#1E2A3A;
+  --moves:#E8799F; --moves-soft:#351E29;
+  --shadow:rgba(0,0,0,.4);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:"Spectral",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62;
+  margin:0; padding-inline:20px; padding-block:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px;margin:0 auto}
+.col{max-width:90ch;margin-inline:auto}
+figure.col{max-width:900px}
+h1,h2,h3,.ui{font-family:"Archivo",system-ui,-apple-system,sans-serif}
+.mono,code,.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+sup,sub{font-size:.72em;line-height:0}
+
+/* ---------- masthead ---------- */
+header{padding-block:68px 40px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 22px}
+.authors{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.07em;color:var(--ink-mid);margin:26px 0 0}
+h1{
+  font-size:clamp(1.85rem,5vw,3.25rem); font-weight:800; line-height:1.02;
+  letter-spacing:-.03em; margin:0; text-wrap:balance; hyphens:manual;
+}
+h1 .thin{font-weight:500;color:var(--ink-dim)}
+.standfirst{font-size:1.22rem;line-height:1.5;color:var(--ink-mid);max-width:54ch;margin:26px 0 0}
+.standfirst b{font-weight:600;color:var(--ink)}
+
+/* ---------- prose ---------- */
+section{padding-block:52px;border-bottom:1px solid var(--rule-soft)}
+section:last-of-type{border-bottom:0}
+h2{font-size:1.7rem;font-weight:700;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+h2 .idx{font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:500;color:var(--moves);letter-spacing:.1em;display:block;margin-bottom:10px}
+h3{font-size:1.06rem;font-weight:600;letter-spacing:-.005em;margin:34px 0 8px}
+p{margin:0 0 16px}
+.col>p:last-child{margin-bottom:0}
+code{font-size:.88em;background:var(--sunk);padding:.1em .34em;border-radius:3px;color:var(--ink-mid)}
+em{font-style:italic}
+strong{font-weight:600}
+.lede{font-size:1.1rem;color:var(--ink-mid)}
+ul{margin:0 0 16px;padding-left:1.15em}
+li{margin-bottom:7px}
+.aside{
+  border-left:2px solid var(--fixed); padding:2px 0 2px 18px; margin:26px 0;
+  color:var(--ink-mid); font-size:.95rem;
+}
+.aside b{color:var(--ink);font-weight:600}
+
+/* ---------- instrument panels ---------- */
+.panel{
+  background:var(--surface); border:1px solid var(--rule);
+  margin:34px 0; padding:26px 24px;
+}
+.panel-head{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.panel-title{font-family:"Archivo",sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);margin:0}
+.hint{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint)}
+
+/* ---------- ladder ---------- */
+.scaletoggle{display:flex;gap:0;border:1px solid var(--rule)}
+.scaletoggle button{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;
+  background:transparent;color:var(--ink-dim);border:0;padding:6px 11px;cursor:pointer;
+}
+.scaletoggle button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.ladder{display:flex;flex-direction:column;gap:3px}
+.rung{
+  display:grid; grid-template-columns:minmax(150px,1.2fr) minmax(0,2.6fr) 104px;
+  gap:14px; align-items:center;
+  background:none;border:0;border-left:3px solid transparent;
+  padding:9px 8px 9px 11px; cursor:pointer; text-align:left; color:inherit; width:100%;
+  font-family:inherit;
+}
+.rung:hover{background:var(--sunk)}
+.rung[aria-pressed="true"]{background:var(--sunk);border-left-color:var(--moves)}
+.rung:focus-visible{outline:2px solid var(--fixed);outline-offset:-2px}
+.rung-name{font-family:"Archivo",sans-serif;font-size:.88rem;font-weight:600;letter-spacing:-.005em;line-height:1.25}
+.rung-year{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:400;color:var(--ink-faint);letter-spacing:.06em;margin-top:3px}
+.rung-year .who{color:var(--ink-mid);font-weight:500}
+.rung[aria-pressed="true"] .rung-year .who{color:var(--moves)}
+.byline{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;
+  color:var(--ink-dim);margin:0 0 12px;
+}
+.byline .who{color:var(--moves);font-weight:500}
+.track{height:19px;background:var(--sunk);position:relative;overflow:hidden}
+.bar{position:absolute;inset-block:0;left:0;background:var(--fixed);transition:width .5s cubic-bezier(.2,.7,.3,1)}
+.rung[aria-pressed="true"] .bar{background:var(--moves)}
+.rung-score{font-family:"IBM Plex Mono",monospace;font-size:.86rem;font-weight:500;text-align:right;letter-spacing:-.025em}
+.offscale{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-faint);position:absolute;right:6px;top:50%;transform:translateY(-50%)}
+
+/* ---------- detail readout ---------- */
+.readout{margin-top:22px;border-top:1px solid var(--rule);padding-top:20px}
+.eq{
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:0;
+  font-family:"IBM Plex Mono",monospace;margin-bottom:20px;
+}
+.term{padding:11px 16px 11px 0;margin-right:16px;border-right:1px solid var(--rule)}
+.term:last-child{border-right:0;margin-right:0;padding-right:0}
+.term-lab{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:5px}
+.term-val{display:block;font-size:1.12rem;font-weight:500;letter-spacing:-.02em}
+.term.is-fixed .term-val{color:var(--fixed)}
+.term.is-moves .term-val{color:var(--moves)}
+.term-sub{display:block;font-size:10.5px;color:var(--ink-dim);margin-top:3px}
+.detail-what{font-size:.98rem;color:var(--ink-mid);margin:0 0 14px;max-width:78ch}
+.detail-what b{color:var(--ink);font-weight:600}
+.delta{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  background:var(--moves-soft);color:var(--moves);padding:3px 9px;letter-spacing:.03em;
+}
+
+/* ---------- stepper ---------- */
+.steps-nav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:24px}
+.step-dot{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;
+  padding:6px 10px;border:1px solid var(--rule);background:transparent;color:var(--ink-dim);cursor:pointer;
+}
+.step-dot:hover{border-color:var(--ink-dim);color:var(--ink)}
+.step-dot[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.step-dot:focus-visible{outline:2px solid var(--fixed);outline-offset:2px}
+.step-phase{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--moves);background:var(--moves-soft);padding:3px 8px;margin-bottom:10px}
+.step-title{font-family:"Archivo",sans-serif;font-size:1.22rem;font-weight:600;letter-spacing:-.015em;margin:0 0 18px;text-wrap:balance}
+.step-row{display:grid;grid-template-columns:104px 1fr;gap:18px;padding:13px 0;border-top:1px solid var(--rule-soft);align-items:start}
+.step-row:first-of-type{border-top:0;padding-top:0}
+.step-k{font-family:"Archivo",sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding-top:4px}
+.step-v{font-size:.96rem;line-height:1.55;color:var(--ink-mid)}
+.step-v b{color:var(--ink);font-weight:600}
+.step-v.formula{font-family:"IBM Plex Mono",monospace;font-size:.88rem;color:var(--ink);line-height:1.75;overflow-x:auto}
+.step-v.cost{font-family:"IBM Plex Mono",monospace;font-size:.95rem;color:var(--moves);font-weight:500}
+.step-foot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;border-top:1px solid var(--rule);padding-top:18px;margin-top:20px}
+.unknown{flex:1 1 240px;min-width:200px}
+.unknown-lab{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-faint);margin-bottom:6px;letter-spacing:.04em}
+.unknown-track{height:8px;background:var(--sunk);position:relative;overflow:hidden}
+.unknown-fill{position:absolute;inset-block:0;left:0;background:var(--fixed);transition:width .45s cubic-bezier(.2,.7,.3,1)}
+.navbtns{display:flex;gap:6px}
+.navbtn{
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;
+  border:1px solid var(--rule);background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;
+}
+.navbtn:hover:not(:disabled){background:var(--sunk)}
+.navbtn:disabled{color:var(--ink-faint);cursor:default;opacity:.5}
+@media(max-width:520px){
+  .step-row{grid-template-columns:1fr;gap:5px}
+  .step-k{padding-top:0}
+}
+
+/* ---------- d slider ---------- */
+.slider-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:720px){.slider-grid{grid-template-columns:1.25fr 1fr;align-items:center}}
+input[type=range]{width:100%;accent-color:var(--moves);margin:0}
+.slider-row{display:flex;flex-direction:column;gap:9px}
+.slider-caps{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint)}
+.dstat{display:flex;flex-direction:column;gap:12px}
+.dstat-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;border-bottom:1px dotted var(--rule);padding-bottom:7px}
+.dstat-k{font-family:"Archivo",sans-serif;font-size:.78rem;font-weight:500;color:var(--ink-dim);letter-spacing:.02em}
+.dstat-v{font-family:"IBM Plex Mono",monospace;font-size:1rem;font-weight:500;letter-spacing:-.02em}
+.verdict{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:8px 11px;line-height:1.45}
+.verdict.ok{background:var(--fixed-soft);color:var(--fixed)}
+.verdict.no{background:var(--moves-soft);color:var(--moves)}
+
+/* ---------- figures ---------- */
+figure{margin:32px 0}
+figure svg{display:block;width:100%;max-width:100%;height:auto;color:var(--ink-mid)}
+figcaption{font-size:.87rem;color:var(--ink-dim);margin-top:14px;line-height:1.5;max-width:76ch;margin-inline:auto}
+figcaption b{color:var(--ink-mid);font-weight:600}
+
+footer{padding-block:40px 70px;color:var(--ink-dim);font-size:.85rem;line-height:1.6}
+footer a{color:var(--ink-mid)}
+footer p{margin:0 0 10px;max-width:90ch}
+.rule-lab{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 12px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:560px){
+  .rung{grid-template-columns:1fr 64px;gap:8px}
+  .rung .track{grid-column:1/-1;order:3}
+  body{font-size:16px}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="col">
+    <p class="eyebrow">BLS12-381 · powers of tau · curvesma.sh</p>
+    <h1><span class="thin">Beyond the</span> Cheon&#8209;Kozaki&#8203;&#8209;Kutsuma&#8203;&#8209;Matsuo <span class="thin">attack</span></h1>
+    <p class="authors">Youssef El Housni and Julio Bezerra</p>
+  </div>
+</header>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">The problem</span>What the challenge hands you</h2>
+    <p>BLS12-381 is an elliptic curve defined over a 381-bit prime field <code>F<sub>p</sub></code> (so point coordinates <code>(x, y)</code> are integers modulo <code>p</code>). Inside it sits the subgroup <code>G<sub>1</sub></code> of prime order <code>r ≈ 2<sup>254.86</sup></code>, generated by a base point <code>P<sub>0</sub></code>. A secret scalar <code>s</code> is chosen from the scalar field <code>F<sub>r</sub></code> (integers modulo <code>r</code>), and you are given the generator <code>P<sub>0</sub></code>, the target point <code>T = [s]P<sub>0</sub></code>, and the auxiliary powers</p>
+    <p style="text-align:center" class="mono">A<sub>i</sub> = [s<sup>i</sup>]P<sub>0</sub> &nbsp; for &nbsp; i = 1 … n, &nbsp; n = 2<sup>20</sup></p>
+    <p>This is the shape of a powers-of-tau trusted setup. Recover <code>s</code>.</p>
+    <p>In the <code>curvesma.sh</code> challenge, a valid submission must recover <code>s</code> with <strong>at least a 39% success probability</strong> (chosen to match <code>1 − e<sup>−1/2</sup> ≈ 0.393</code>). Total cost is measured in normalized <strong>reference group operations</strong>, where one unit represents a single batched affine point addition over <code>F<sub>p</sub></code> (six base-field multiplications, fixed at <code>C = 2,000</code> instructions).</p>
+    <p>Without the auxiliary powers, plain Pollard rho using the curve's six-element automorphism classes costs about <code>2<sup>126.5</sup></code> operations. The auxiliary points <code>A<sub>i</sub></code> are what make a faster attack possible — and the history below is about how much they are worth.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">2006</span>Cheon's reduction</h2>
+    <p>Cheon's reduction requires a positive divisor <code>d</code> of <code>r − 1</code> (or of <code>r + 1</code> in a Dickson-polynomial variant we will not need here) no larger than the supply of powers <code>n</code>. BLS12-381 is generous here, and not by accident: <code>r</code> was chosen so that <code>2<sup>32</sup></code> divides <code>r − 1</code>, which allows radix-2 FFTs over <code>F<sub>r</sub></code>, which make SNARK proving faster. This property is what the attack feeds on — every divisor <code>d = 2<sup>k</sup></code> up to <code>k = 32</code> is available, and the challenge supplies powers up to <code>n = 2<sup>20</sup></code>, so we take <code>d = 2<sup>20</sup></code>.</p>
+    <p>Write <code>s = ζ<sup>k</sup></code> for a generator <code>ζ</code> of <code>F<sub>r</sub><sup>*</sup></code>, the multiplicative group of non-zero scalars, which is cyclic of order <code>r − 1</code>. Then <code>s<sup>d</sup></code> lies in <code>H</code>, the subgroup of <code>d</code>-th powers in <code>F<sub>r</sub><sup>*</sup></code>, which has order</p>
+    <p style="text-align:center" class="mono">m = (r − 1) / d ≈ 2<sup>234.86</sup></p>
+    <p>— a search space <code>2<sup>20</sup></code> times smaller than the one <code>s</code> lives in. Phase 1 finds <code>k mod m</code> by a baby-step giant-step (BSGS) meet-in-the-middle inside <code>H</code> using two lists of size <code>L = ⌈√m⌉ ≈ 2<sup>117.43</sup></code>; Phase 2 then recovers the remaining <code>20</code> bits of <code>k</code> by a second, tiny search over the <code>d</code>-th roots of unity using two lists of size <code>√d = 2<sup>10</sup></code>.</p>
+    <p>Because <code>d = 2<sup>20</sup></code>, Cheon's reduction cuts the <strong>number of steps</strong> by a factor of <code>√d = 2<sup>10</sup></code> (ten full bits), down to <code>2√(r/d) ≈ 2<sup>118.43</sup></code> steps in Phase 1 and <code>2√d = 2<sup>11</sup></code> steps in Phase 2. In Cheon's 2006 analysis, however, each step required a full scalar multiplication — <code>O(log r)</code> group operations — so the published complexity carried a logarithmic factor that ate back most of those ten bits until 2007:</p>
+    <p style="text-align:center" class="mono">O( (√(r/d) + √d) · log r )</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <p class="panel-title">The attack, step by step</p>
+      <p class="hint">seven steps — click a number or use the buttons</p>
+    </div>
+    <div class="steps-nav" id="steps-nav" role="group" aria-label="attack steps"></div>
+    <div id="step-body"></div>
+    <div class="step-foot">
+      <div class="unknown">
+        <div class="unknown-lab"><span>candidates remaining for s</span><span id="unk-val">2<sup>254.86</sup></span></div>
+        <div class="unknown-track"><span class="unknown-fill" id="unk-fill" style="width:100%"></span></div>
+      </div>
+      <div class="navbtns">
+        <button type="button" class="navbtn" id="step-prev">← prev</button>
+        <button type="button" class="navbtn" id="step-next">next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>Notice where the work sits. Phase 1 evaluates <code>2L = 2√m ≈ 2<sup>118.43</sup></code> points across the baby and giant lists; Phase 2 evaluates <code>2√d = 2<sup>11</sup></code> points. The second phase is <strong>107 orders of magnitude</strong> cheaper and rounds away completely — which immediately raises the question of whether <code>d</code> could be chosen larger.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <p class="panel-title">The d tradeoff</p>
+      <p class="hint">drag — d must divide r−1 and you must own [s<sup>d</sup>]P<sub>0</sub></p>
+    </div>
+    <div class="slider-grid">
+      <div class="slider-row">
+        <svg id="dchart" viewBox="0 0 520 190" role="img" aria-label="Cost of Cheon's attack against the choice of d, falling by half a bit per doubling, with the region beyond 2 to the 20 unavailable"></svg>
+        <input type="range" id="dslider" min="0" max="32" step="1" value="20" aria-label="exponent of d">
+        <div class="slider-caps"><span>d = 2<sup>0</sup></span><span>2<sup>20</sup> · the supply limit</span><span>2<sup>32</sup></span></div>
+      </div>
+      <div class="dstat">
+        <div class="dstat-row"><span class="dstat-k">d</span><span class="dstat-v" id="d-d">2<sup>20</sup></span></div>
+        <div class="dstat-row"><span class="dstat-k">phase 1 — 2√(r/d)</span><span class="dstat-v" id="d-p1">2<sup>118.43</sup></span></div>
+        <div class="dstat-row"><span class="dstat-k">phase 2 — 2√d</span><span class="dstat-v" id="d-p2">2<sup>11.00</sup></span></div>
+        <div class="dstat-row"><span class="dstat-k">total steps (baby + giant)</span><span class="dstat-v" id="d-tot">2<sup>118.43</sup></span></div>
+        <div class="verdict ok" id="d-verdict">Feasible. 2<sup>20</sup> divides r−1, and A<sub>d</sub> is supplied.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>Two things fall out of that slider. The two phases are <em>wildly</em> unbalanced — Phase 2's <code>2<sup>11</sup></code> steps are negligible next to Phase 1's <code>2<sup>118.43</sup></code>. And a larger <code>d</code> would keep paying off, at half a bit per doubling, all the way to <code>2<sup>32</sup></code>, however you cannot go beyond the given one: deriving <code>[s<sup>2d</sup>]P<sub>0</sub></code> from <code>[s<sup>d</sup>]P<sub>0</sub></code> is the computational Diffie–Hellman problem.</p>
+    <div class="aside"><b>So the divisor is frozen at d = 2<sup>20</sup>,</b> and has been since 2006. Everything that follows is a fight over what one step costs — first the <code>log r</code> factor, then the constant.</div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">2007</span>KKM: kill the log factor</h2>
+    <p>Why did Cheon's 2006 paper only gain 1.3 bits over Pollard rho when <code>√d = √(2<sup>20</sup>) = 2<sup>10</sup></code> cuts the step count by a full 10 bits? Because in Cheon's 2006 analysis, advancing from <code>[ζ<sup>di</sup>]P<sub>0</sub></code> to <code>[ζ<sup>d(i+1)</sup>]P<sub>0</sub></code> meant multiplying the point by the 255-bit scalar <code>ζ<sup>d</sup></code> — a 383-operation binary scalar multiplication (<code>+8.6</code> bits per step) that ate back almost the entire 10-bit step reduction.</p>
+    <p>Kozaki, Kutsuma, and Matsuo (KKM) observed that every point in the walk is a multiple of the <em>same</em> fixed base point (<code>A<sub>d</sub></code> for the baby steps, <code>P<sub>0</sub></code> for the giant steps). By expanding each scalar <code>δ<sub>i</sub> = ζ<sup>di</sup> mod r</code> in base <code>b = ⌈r<sup>1/c</sup>⌉</code> and precomputing a table of <code>c · b</code> points, any <code>[δ<sub>i</sub>]P<sub>0</sub></code> can be assembled by adding <code>c − 1</code> table lookups. With <code>c = 3</code> tables, a step drops to:</p>
+    <ul>
+      <li><strong>one F<sub>r</sub> multiplication</strong> — update the scalar exponent, <code>δ<sub>i+1</sub> = δ<sub>i</sub> · ζ<sup>d</sup> mod r</code></li>
+      <li><strong>two point additions</strong> — sum the <code>c = 3</code> base-<code>b</code> digits from the precomputed tables</li>
+    </ul>
+    <p>That reduces the per-step cost from <code>O(log r)</code> to <code>O(1)</code> group operations, flattening the asymptotic complexity to <code>O(√(r/d) + √d)</code> and unlocking the remaining 7.3 bits of Cheon's reduction. <strong>This is the only asymptotic improvement in the entire lineage</strong> — everything after it is a fight over the constant factor.</p>
+
+    <div class="aside">
+      <b>Deriving the 2<sup>117.894</sup> KKM baseline (39% birthday bound + 6-fold GLV folding + KKM step cost).</b> How do we get the exact <code>2<sup>117.894</sup></code> cost for KKM in the benchmark? Start from textbook BSGS's <code>2L = 2√m ≈ 2<sup>118.43</sup></code> steps and apply the two standard reductions plus KKM's per-step cost:
+      <br><br>
+      1. <b>The 39% birthday target (−0.47 bits in steps):</b> Testing <code>K · m</code> random pairs in a subgroup of size <code>m</code> finds a collision with probability <code>1 − e<sup>−K</sup></code>. Targeting the benchmark's <code>≥ 39%</code> requirement uses <code>K = 0.52</code> (<code>1 − e<sup>−0.52</sup> ≈ 40.5%</code>) instead of <code>K = 1</code>, shrinking each list by <code>√0.52 ≈ 2<sup>−0.47</sup></code>.<br>
+      2. <b>Six-fold GLV folding for free (−1.29 bits in steps):</b> BLS12-381's <code>G<sub>1</sub></code> is a <code>j = 0</code> curve carrying the cube-root endomorphism <code>λ: (x, y) ↦ (βx, y)</code>, which together with negation <code>(x, y) ↦ (x, p − y)</code> forms six-element classes inside <code>H</code>. Because <code>λ</code> <em>fixes the y-coordinate</em> and negation only flips its sign modulo <code>p</code>, keying the lookup table on <code>min(y, p − y)</code> makes all six points <code>[±1, ±λ, ±λ<sup>2</sup>]Q</code> collide on the same key with zero extra multiplications. Testing six ratios per pair shrinks each list by <code>√6 ≈ 2<sup>1.29</sup></code>.<br>
+      3. <b>KKM's cost per step (+1.23 bits per step):</b> Those two reductions bring the number of evaluated steps down to <code>2N = 2√(Km/6) ≈ 2<sup>116.66</sup></code>. In KKM (<code>c = 3</code>), however, each step costs <b>2 curve additions</b> (<code>2.0</code> units) + <b>1 F<sub>r</sub> multiplication</b> (<code>≈ 0.11</code> units) + <b>table/routing overhead</b> (<code>0.245</code> units) = <b><code>2.353 ≈ 2<sup>1.234</sup></code> reference units per step</b>.
+      <br><br>
+      Multiplying the reduced step count by KKM's per-step cost gives KKM's total benchmark score:
+      <span class="mono" style="display:block;text-align:center;margin-top:8px;color:var(--ink)">2<sup>116.66</sup> steps × 2.353 units/step = <b>2<sup>117.894</sup> reference units</b>.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">The ladder</span>Nearly nine bits, all of it per-step cost</h2>
+    <p class="lede">Two of these rungs are papers; eight are curvesma.sh submissions filed over eight days in October 2026. All of them evaluate the same <code>2N ≈ 2<sup>116.66</sup></code> steps, starting from KKM's <code>117.894</code> baseline. Select a rung to see where its cost went, and who moved it.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <p class="panel-title">Score — log<sub>2</sub> of total work, lower is better</p>
+      <div class="scaletoggle" role="group" aria-label="chart scale">
+        <button type="button" id="sc-full" aria-pressed="true">full range</button>
+        <button type="button" id="sc-zoom" aria-pressed="false">zoom 116.3–117.0</button>
+      </div>
+    </div>
+    <div class="ladder" id="ladder" role="group" aria-label="attack lineage"></div>
+    <div class="readout" id="readout"></div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">October 2026</span>The additive walk</h2>
+    <p>The first curvesma.sh submission to beat the <code>117.894</code> KKM baseline kept Cheon's subgroup reduction untouched and replaced the <em>walk itself</em>. It abandoned the traditional geometric progression (<code>x<sub>i+1</sub> = x<sub>i</sub> · ζ<sup>d</sup></code>) in <code>H</code> and replaced it with lists of integers that can be walked using a single elliptic curve addition.</p>
+    <div class="aside">
+      <b>A nineteen-year-old road not taken.</b> Walking through exponents by adding small integer steps from a precomputed jump table goes back to Pollard's 1978 "kangaroo" (or <code>λ</code>) method, though it had never been successfully combined with Cheon's reduction. Remarkably, Kozaki, Kutsuma, and Matsuo (§4 of their 2007 paper) explicitly considered walking small integers <code>{g<sub>t</sub>, [2]g<sub>t</sub>, …, [n−1]g<sub>t</sub>}</code> in the context of Cheon's attack, but abandoned the idea, remarking: <em>"However, a table in this scenario seems difficult to construct because the elements in {g<sub>t</sub>, [2]g<sub>t</sub>, [3]g<sub>t</sub>, …, [n−1]g<sub>t</sub>} are discretely distributed in <b>Z</b>/p<b>Z</b> in general."</em>
+    </div>
+
+    <h3>Why a step was always expensive</h3>
+    <p>In both textbook Cheon and KKM, the baby and giant sets are <em>geometric progressions</em> in <code>H</code>: <code>ζ<sup>0</sup>, ζ<sup>d</sup>, ζ<sup>2d</sup>, …</code>. Advancing one step multiplies the scalar exponent by the 255-bit constant <code>ζ<sup>d</sup> mod r</code>, landing at a pseudorandom position across <code>F<sub>r</sub></code>. Because consecutive scalars have no simple additive difference, you cannot step directly from one curve point to the next: Cheon rebuilds the point from scratch with a 383-operation scalar multiplication, and KKM still has to multiply the scalar in <code>F<sub>r</sub></code> and sum two table additions to reassemble it (<code>2.353</code> units per step).</p>
+    <p>Where KKM left the geometric sets alone and sped up evaluating them, the additive walk changes the sets so that consecutive scalars in <code>H</code> are integers of the form <code>a · b</code> differing by a small known gap <code>a · g</code>. Advancing from one point to the next becomes</p>
+    <p style="text-align:center" class="mono">[a(b + g)]P<sub>0</sub> = [ab]P<sub>0</sub> + T[g]</p>
+    <p>— a single affine curve addition using a small gap table <code>T[g] = [ag]P<sub>0</sub></code>, with no exponent multiplication in <code>F<sub>r</sub></code> at all. Dropping from KKM's two additions and an <code>F<sub>r</sub></code> multiply (<code>2.353</code> units) to a single addition (<code>1.245</code> units) immediately cuts <code>0.91</code> bits off the total score (<code>117.894 → 116.983</code>).</p>
+  </div>
+
+  <figure class="col">
+    <svg viewBox="0 0 660 250" role="img" aria-label="A geometric walk lands at scattered positions and each step costs a scalar multiplication or table reassembly; an additive walk marches through nearby integers and each step costs one addition">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <polygon points="0,1 9,5 0,9" fill="currentColor"/>
+        </marker>
+        <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <polygon points="0,1 9,5 0,9" fill="#B5316B"/>
+        </marker>
+      </defs>
+
+      <text x="0" y="14" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" letter-spacing="1.2">GEOMETRIC — ζ<tspan dy="-4" font-size="8">0</tspan><tspan dy="4">, </tspan>ζ<tspan dy="-4" font-size="8">d</tspan><tspan dy="4">, </tspan>ζ<tspan dy="-4" font-size="8">2d</tspan><tspan dy="4">, …</tspan></text>
+      <line x1="0" y1="78" x2="660" y2="78" stroke="currentColor" stroke-width="1" opacity=".3"/>
+      <text x="0" y="95" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".55">0</text>
+      <text x="660" y="95" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".55" text-anchor="end">r</text>
+      <circle cx="92" cy="78" r="4" fill="currentColor"/>
+      <circle cx="511" cy="78" r="4" fill="currentColor"/>
+      <circle cx="207" cy="78" r="4" fill="currentColor"/>
+      <circle cx="604" cy="78" r="4" fill="currentColor"/>
+      <circle cx="330" cy="78" r="4" fill="currentColor"/>
+      <path d="M92 78 Q301 22 511 78" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+      <path d="M511 78 Q359 20 207 78" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+      <path d="M207 78 Q405 18 604 78" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+      <path d="M604 78 Q467 24 330 78" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+      <text x="330" y="112" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle">each hop = × ζ<tspan dy="-4" font-size="8">d</tspan><tspan dy="4"> = ~383 ops (Cheon) or 2 adds + 1 F</tspan><tspan dy="3" font-size="8">r</tspan><tspan dy="-3"> mul (KKM)</tspan></text>
+
+      <line x1="0" y1="140" x2="660" y2="140" stroke="currentColor" stroke-width="1" opacity=".18"/>
+
+      <text x="0" y="170" font-family="IBM Plex Mono, monospace" font-size="11" fill="#B5316B" letter-spacing="1.2">ADDITIVE — consecutive small integers lying in H</text>
+      <line x1="0" y1="218" x2="660" y2="218" stroke="currentColor" stroke-width="1" opacity=".3"/>
+      <g fill="#B5316B">
+        <circle cx="64" cy="218" r="4"/><circle cx="118" cy="218" r="4"/><circle cx="159" cy="218" r="4"/>
+        <circle cx="221" cy="218" r="4"/><circle cx="268" cy="218" r="4"/><circle cx="317" cy="218" r="4"/>
+        <circle cx="356" cy="218" r="4"/><circle cx="414" cy="218" r="4"/><circle cx="459" cy="218" r="4"/>
+        <circle cx="506" cy="218" r="4"/><circle cx="551" cy="218" r="4"/><circle cx="601" cy="218" r="4"/>
+      </g>
+      <g stroke="#B5316B" stroke-width="1.4" fill="none">
+        <path d="M64 206 Q91 192 118 206" marker-end="url(#ahm)"/>
+        <path d="M118 206 Q138 194 159 206" marker-end="url(#ahm)"/>
+        <path d="M159 206 Q190 190 221 206" marker-end="url(#ahm)"/>
+        <path d="M221 206 Q244 192 268 206" marker-end="url(#ahm)"/>
+        <path d="M268 206 Q292 192 317 206" marker-end="url(#ahm)"/>
+        <path d="M317 206 Q336 194 356 206" marker-end="url(#ahm)"/>
+        <path d="M356 206 Q385 190 414 206" marker-end="url(#ahm)"/>
+        <path d="M414 206 Q436 192 459 206" marker-end="url(#ahm)"/>
+        <path d="M459 206 Q482 192 506 206" marker-end="url(#ahm)"/>
+        <path d="M506 206 Q528 192 551 206" marker-end="url(#ahm)"/>
+        <path d="M551 206 Q576 192 601 206" marker-end="url(#ahm)"/>
+      </g>
+      <text x="330" y="245" font-family="IBM Plex Mono, monospace" font-size="11" fill="#B5316B" text-anchor="middle">each hop = + [a·g]P<tspan dy="3" font-size="8">0</tspan><tspan dy="-3"> from a table = one addition</tspan></text>
+    </svg>
+    <figcaption><b>The single idea that unlocked everything after 2007.</b> A meet-in-the-middle does not require its baby and giant sets to be geometric progressions — only that their scalars lie in <code>H</code> and that their ratios cover enough of it. Choosing <em>consecutive small integers in H</em> instead makes neighbouring scalars differ by a small known gap <code>g</code>, so the next curve point is the previous one plus a precomputed table entry.</figcaption>
+  </figure>
+
+  <div class="col">
+    <h3>Finding enough integers in H</h3>
+    <p>Why did KKM think such a walk was difficult to construct? Because a random integer lands in the subgroup <code>H</code> with probability only <code>1/d = 2<sup>−20</sup></code>, making naive enumerate-and-test hopeless. The fix is a multiplicative character sieve: define <code>χ(x) = log<sub>ζ</sub>(x<sup>m</sup>) mod d</code>, a homomorphism whose kernel is <code>H</code>. A product <code>a · b</code> lies in <code>H</code> precisely when</p>
+    <p style="text-align:center" class="mono">χ(a) + χ(b) ≡ 0 &nbsp;(mod d)</p>
+    <p>We can compute <code>χ(b)</code> for all small integers <code>b</code> once and bucket them into lists <code>L<sub>c</sub> = {b : χ(b) = c}</code>. Then, for any base prime <code>a</code> with character <code>χ(a) = −c</code>, <em>every</em> integer <code>b ∈ L<sub>c</sub></code> satisfies <code>a · b ∈ H</code>, and walking through sorted elements of <code>L<sub>c</sub></code> steps by small integer gaps <code>g = b<sub>i+1</sub> − b<sub>i</sub></code>.</p>
+
+    <h3>Making one addition cost one reference unit</h3>
+    <p>An affine curve addition over <code>F<sub>p</sub></code> requires one field inversion (to compute the chord slope) and three field multiplications (<code>3M</code>). A standalone inversion costs dozens of field multiplications, and a single walk is strictly sequential — you need <code>X<sub>i</sub></code> before you can compute <code>X<sub>i+1</sub></code>. To amortize the inversion, <strong>2<sup>16</sup> chains run in lockstep</strong>, one per base prime <code>a</code>, and all <code>2<sup>16</sup></code> independent additions in a round share a single Montgomery batch inversion (which costs <code>3M</code> per point, bringing the step to the <code>6M</code> reference unit).</p>
+  </div>
+
+  <figure class="col">
+    <svg viewBox="0 0 660 230" role="img" aria-label="Sixteen thousand independent chains advance one step each round, and all their denominators are inverted together in a single shared field inversion">
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor">
+        <text x="0" y="12" letter-spacing="1.2">ROUND j — one step on every chain</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.2" fill="none" opacity=".75">
+        <line x1="0" y1="46" x2="196" y2="46"/><line x1="0" y1="72" x2="196" y2="72"/>
+        <line x1="0" y1="98" x2="196" y2="98"/><line x1="0" y1="150" x2="196" y2="150"/>
+      </g>
+      <g fill="currentColor">
+        <circle cx="0" cy="46" r="3"/><circle cx="0" cy="72" r="3"/><circle cx="0" cy="98" r="3"/><circle cx="0" cy="150" r="3"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".6">
+        <text x="6" y="40">chain 1 · base prime a<tspan dy="3" font-size="8">1</tspan></text>
+        <text x="6" y="66">chain 2 · a<tspan dy="3" font-size="8">2</tspan></text>
+        <text x="6" y="92">chain 3 · a<tspan dy="3" font-size="8">3</tspan></text>
+        <text x="6" y="144">chain 2<tspan dy="-4" font-size="8">16</tspan><tspan dy="4"> · a</tspan><tspan dy="3" font-size="8">65536</tspan></text>
+        <text x="96" y="124" font-size="14">⋮</text>
+      </g>
+      <g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+        <line x1="196" y1="46" x2="243" y2="46"/><line x1="196" y1="72" x2="243" y2="72"/>
+        <line x1="196" y1="98" x2="243" y2="98"/><line x1="196" y1="150" x2="243" y2="150"/>
+      </g>
+      <path d="M252 38 L252 158" stroke="#B5316B" stroke-width="1.2" fill="none"/>
+      <path d="M252 38 L262 38 M252 158 L262 158" stroke="#B5316B" stroke-width="1.2"/>
+      <rect x="276" y="76" width="152" height="44" fill="none" stroke="#B5316B" stroke-width="1.5"/>
+      <text x="352" y="94" font-family="IBM Plex Mono, monospace" font-size="11" fill="#B5316B" text-anchor="middle">ONE inversion</text>
+      <text x="352" y="110" font-family="IBM Plex Mono, monospace" font-size="10" fill="#B5316B" text-anchor="middle">Montgomery's trick</text>
+      <line x1="262" y1="98" x2="272" y2="98" stroke="#B5316B" stroke-width="1.5" marker-end="url(#ahm)"/>
+      <line x1="428" y1="98" x2="448" y2="98" stroke="#B5316B" stroke-width="1.5" marker-end="url(#ahm)"/>
+      <path d="M458 38 L458 158" stroke="#B5316B" stroke-width="1.2" fill="none"/>
+      <path d="M458 38 L448 38 M458 158 L448 158" stroke="#B5316B" stroke-width="1.2"/>
+      <g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+        <line x1="462" y1="46" x2="660" y2="46"/><line x1="462" y1="72" x2="660" y2="72"/>
+        <line x1="462" y1="98" x2="660" y2="98"/><line x1="462" y1="150" x2="660" y2="150"/>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor">
+        <text x="0" y="192">3M addition formula  +  3M batch amortisation  =  6M  =  the reference unit</text>
+        <text x="0" y="212" opacity=".62">the field inversion itself, divided across 2<tspan dy="-4" font-size="8">16</tspan><tspan dy="4"> elements, vanishes into noise</tspan></text>
+      </g>
+    </svg>
+    <figcaption><b>Why parallel chains are load-bearing.</b> Montgomery's trick inverts <code>N</code> field elements using one inversion and <code>3(N−1)</code> multiplications. Across <code>2<sup>16</sup></code> parallel chains, the amortized inversion cost is <code>3M</code> per point — which, added to the <code>3M</code> of the affine addition formula, lands right on the benchmark's <code>6M</code> reference operation.</figcaption>
+  </figure>
+
+  <div class="col">
+    <div class="aside">
+      <b>Remark: The H-prime semiprime variation (jungjipdo).</b> A follow-up submission simplified the character construction by setting <em>both</em> characters to zero: <code>χ(a) = χ(b) = 0</code>, with <code>a</code> and <code>b</code> both chosen to be primes lying directly in <code>H</code> ("H-primes"). Because every scalar <code>x = a · b</code> is then a semiprime, unique prime factorization immediately guarantees that all walk elements and nearly all ratios are distinct without any overlap analysis. Algorithmically, however, restricting <code>b</code> to primes in <code>H</code> thins the candidate pool by a factor of <code>ln b</code>, making valid steps rarer and gaps much wider. Although the submission achieved a better leaderboard score at the time, that gain came purely from tighter bookkeeping and implementation accounting rather than the semiprime walk itself.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">The accounting era</span>Routing and coverage trims</h2>
+    <p>Once the additive walk was in place, four days of submissions — by Yonkoo11, kaankolcu, and fkiene — fought over the non-cryptographic overhead charged on top of the curve addition:</p>
+    <ul>
+      <li><strong>Table routing overhead</strong> dropped from <code>0.245</code> to <code>0.070</code> units per element. In the benchmark's distributed memory model, matching <code>N ≈ 2<sup>115.66</sup></code> baby steps against <code>N</code> giant steps across <code>2<sup>84</sup></code> memory nodes was initially dominated by multi-hop packet routing. Replacing per-element routing with direct-mapped bucket sorting cut the transport cost by more than two-thirds.</li>
+      <li><strong>The coverage constant K</strong> was trimmed from <code>0.52</code> down to <code>0.49515</code>. Setting <code>K = 0.52</code> gave a collision probability of <code>1 − e<sup>−0.52</sup> ≈ 40.55%</code>, overshooting the benchmark's required <code>39%</code> threshold; tuning <code>K</code> down to the exact requirement saved another <code>0.035</code> bits for free.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="idx">27–30 October</span>Two points, one inversion</h2>
+    <p>Everything above treated one batched affine addition (<code>6M</code>) as the irreducible floor for generating one search element. That turned out to be a convention, not a floor.</p>
+    <p class="byline" style="margin-bottom:18px">Found twice, hours apart. <span class="who">gbotrel</span> filed the construction first at 01:08; <span class="who">mpjunior92</span> reached it independently at 07:29 and was first to get it accepted at 09:41. The winning packages now cite each other.</p>
+    <p>Suppose a character class <code>L<sub>c</sub></code> contains two elements <code>b<sub>1</sub> = b<sub>2</sub> − g</code> and <code>b<sub>3</sub> = b<sub>2</sub> + g</code> symmetric around a midpoint <code>b<sub>2</sub></code>. If the worker holds the midpoint curve point <code>P = [a · b<sub>2</sub>]Q</code> (for <code>Q ∈ {P<sub>0</sub>, A<sub>d</sub>}</code>) and looks up the gap point <code>T = [a · g]Q</code>, then both outer points are one addition away:</p>
+    <p style="text-align:center" class="mono">[a(b<sub>2</sub> + g)]Q = P + T &nbsp;&nbsp;&nbsp; [a(b<sub>2</sub> − g)]Q = P − T</p>
+    <p>Crucially, on an elliptic curve, <code>−T = (x<sub>T</sub>, −y<sub>T</sub>)</code> has the <em>exact same x-coordinate</em> as <code>T = (x<sub>T</sub>, y<sub>T</sub>)</code>. Both chord slopes share the identical denominator <code>Δx = x<sub>T</sub> − x<sub>P</sub></code>, so a <strong>single field inversion produces both points</strong>.</p>
+  </div>
+
+  <figure class="col">
+    <svg viewBox="0 0 660 280" role="img" aria-label="T and minus T share an x-coordinate, so the two chords from P have the same denominator and one inversion produces both P plus T and P minus T">
+      <line x1="0" y1="140" x2="520" y2="140" stroke="currentColor" stroke-width="1" opacity=".25"/>
+      <text x="526" y="144" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".55">y = 0</text>
+
+      <line x1="150" y1="44" x2="150" y2="236" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".3"/>
+      <line x1="400" y1="60" x2="400" y2="220" stroke="#B5316B" stroke-width="1" stroke-dasharray="3 3" opacity=".55"/>
+
+      <circle cx="150" cy="86" r="5" fill="currentColor"/>
+      <text x="150" y="72" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor" text-anchor="middle">P = [a·b<tspan dy="3" font-size="8">2</tspan><tspan dy="-3">]Q</tspan></text>
+
+      <circle cx="400" cy="92" r="5" fill="#B5316B"/>
+      <text x="412" y="88" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#B5316B">T = [a·g]Q</text>
+      <circle cx="400" cy="188" r="5" fill="#B5316B"/>
+      <text x="412" y="196" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#B5316B">−T</text>
+
+      <line x1="150" y1="86" x2="400" y2="92" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="150" y1="86" x2="400" y2="188" stroke="currentColor" stroke-width="1.5"/>
+
+      <path d="M150 252 L400 252" stroke="#B5316B" stroke-width="1.2" fill="none"/>
+      <path d="M150 248 L150 256 M400 248 L400 256" stroke="#B5316B" stroke-width="1.2"/>
+      <text x="275" y="271" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#B5316B" text-anchor="middle">Δx identical for both chords — ONE inversion</text>
+
+      <text x="275" y="38" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle">λ<tspan dy="3" font-size="8">1</tspan><tspan dy="-3"> = (y</tspan><tspan dy="3" font-size="8">T</tspan><tspan dy="-3"> − y</tspan><tspan dy="3" font-size="8">P</tspan><tspan dy="-3">)/Δx  →  P + T = [a(b</tspan><tspan dy="3" font-size="8">2</tspan><tspan dy="-3">+g)]Q</tspan></text>
+      <text x="275" y="228" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle">λ<tspan dy="3" font-size="8">2</tspan><tspan dy="-3"> = (−y</tspan><tspan dy="3" font-size="8">T</tspan><tspan dy="-3"> − y</tspan><tspan dy="3" font-size="8">P</tspan><tspan dy="-3">)/Δx  →  P − T = [a(b</tspan><tspan dy="3" font-size="8">2</tspan><tspan dy="-3">−g)]Q</tspan></text>
+    </svg>
+    <figcaption><b>Why a pair is cheaper than two single steps.</b> Negating a point flips <code>y</code> and leaves <code>x</code> untouched, so <code>P + T</code> and <code>P − T</code> share the denominator <code>Δx = x<sub>T</sub> − x<sub>P</sub></code>. The batch inversion (normally <code>3M</code> of the <code>6M</code> reference step) is paid once for two outputs, dropping the amortized cost below <code>0.81</code> reference units per point.</figcaption>
+  </figure>
+
+  <div class="col">
+    <h3>Why combining characters with 3-APs is not trivial</h3>
+    <p>Merging this 2-for-1 inversion trick with the earlier subgroup walk runs into an immediate algebraic wall: <strong>the character sieve is multiplicative, whereas 3-term arithmetic progressions (3-APs) are additive</strong>.</p>
+    <p>For both <code>P − T</code> and <code>P + T</code> to represent valid search elements in <code>H</code>, both <code>b<sub>1</sub> = b<sub>2</sub> − g</code> and <code>b<sub>3</sub> = b<sub>2</sub> + g</code> must have the same multiplicative character <code>χ(b<sub>1</sub>) = χ(b<sub>3</sub>) = −χ(a)</code>. Because <code>χ</code> is a homomorphism with respect to multiplication (<code>χ(xy) = χ(x) + χ(y)</code>), it has no predictable relationship with addition: knowing <code>χ(b<sub>2</sub>)</code> and <code>χ(g)</code> tells you nothing at all about <code>χ(b<sub>2</sub> ± g)</code>. Worse, trying to use the H-prime semiprime variant here fails outright: a midpoint works only when <em>both</em> <code>b<sub>2</sub> − g</code> and <code>b<sub>2</sub> + g</code> land in the list, so the density of usable pairs scales as the <strong>square</strong> of the list's density. Requiring 76-bit integers to be prime thins the list by <code>ln(2<sup>76</sup>) ≈ 53</code>, making symmetric pairs about <code>53<sup>2</sup> ≈ 2,800</code> times rarer and blowing up the gap tables to <code>2<sup>110</sup></code>.</p>
+    <p>The solution decouples <strong>subgroup membership</strong> from <strong>walk scheduling</strong>:</p>
+    <ul>
+      <li><strong>Multiplicative sieving first:</strong> Small integers (or primes) <code>b</code> are sieved once by their character into dense buckets <code>L<sub>c</sub> = {b : χ(b) = c}</code>.</li>
+      <li><strong>Offline additive planning:</strong> Instead of walking <code>L<sub>c</sub></code> sequentially, an offline planning pass scans each sorted class <code>L<sub>c</sub></code> for naturally occurring symmetric pairs <code>b<sub>1</sub>, b<sub>3</sub> ∈ L<sub>c</sub></code> (or 3-term progressions <code>b<sub>1</sub>, b<sub>2</sub>, b<sub>3</sub></code>) with midpoint <code>b<sub>2</sub></code> and small gap <code>g = b<sub>3</sub> − b<sub>2</sub> = b<sub>2</sub> − b<sub>1</sub></code>.</li>
+      <li><strong>Midpoint execution:</strong> The worker advances the chain from one midpoint <code>P = [a · b<sub>2</sub>]Q</code> to the next and uses the shared inversion with <code>T = [a · g]Q</code> to emit <code>P − T</code> and <code>P + T</code> simultaneously.</li>
+    </ul>
+    <p>This achieves the best of both worlds — the high density of the character sieve together with the 2-for-1 inversion discount — at the price of two minor penalties that must be budgeted in the score. First, because elements in <code>L<sub>c</sub></code> are distributed pseudorandomly, they do not tile into pairs with 100% efficiency: roughly <code>98%</code> of points are emitted in pairs, while the remaining <code>~2%</code> of "orphaned" elements must be evaluated individually, slightly eroding the theoretical discount. Second, returning from H-primes to general character buckets (with prime <code>a &gt; b</code>) reintroduces a tiny, bounded fraction of duplicate ratios across chains.</p>
+
+    <h3>Recovering the last 20 bits</h3>
+    <p>In textbook Cheon, Phase 1 finds the discrete logarithm <code>k mod m</code> directly. In the additive walk, a collision between a baby step <code>[a · b]A<sub>d</sub></code> and a giant step <code>[a′ · b′]P<sub>0</sub></code> instead yields the <em>field element</em> <code>t = s<sup>d</sup> = ±λ<sup>j</sup>(a′b′)/(ab) mod r</code> as a ratio of known integers. Phase 2 therefore inverts the <code>d</code>-th power map in two brief steps:</p>
+    <ul>
+      <li><strong>Extract one <code>d</code>-th root in F<sub>r</sub>:</strong> Because <code>d = 2<sup>20</sup></code>, taking <code>20</code> successive modular square roots of <code>t</code> via Tonelli–Shanks yields one root <code>s<sub>0</sub> ∈ F<sub>r</sub></code> satisfying <code>s<sub>0</sub><sup>d</sup> ≡ t (mod r)</code>.</li>
+      <li><strong>Identify which of the <code>d</code> roots is s:</strong> The true secret is <code>s = s<sub>0</sub> · ω<sup>i</sup></code> for some <code>0 ≤ i &lt; 2<sup>20</sup></code>, where <code>ω = ζ<sup>(r−1)/d</sup></code> is a primitive <code>d</code>-th root of unity. Writing <code>i = i<sub>0</sub> + 2<sup>10</sup>i<sub>1</sub></code> and matching the <code>2<sup>10</sup></code> baby points <code>[s<sub>0</sub>ω<sup>i<sub>0</sub></sup>]P<sub>0</sub></code> against the <code>2<sup>10</sup></code> giant points <code>[ω<sup>−2<sup>10</sup>i<sub>1</sub></sup>]T</code> recovers <code>i</code> in <code>2√d = 2<sup>11</sup></code> steps.</li>
+    </ul>
+    <p>All of Phase 2 costs under <code>2<sup>24</sup></code> units — over ninety bits below Phase 1 and completely invisible in the total score.</p>
+
+    <h3>The final fractions of a bit</h3>
+    <p>Because the benchmark defines one reference unit as <code>C = 2,000</code> executed AArch64 instructions, the final submissions (by mpjunior92, gbotrel, pepedesigner, kaankolcu, and e-man07) moved from high-level operation counts to benchmarking custom straight-line assembly for the paired addition and hoisting function-call overhead out of the inner loop across all <code>2<sup>16</sup></code> lanes. Cheon's underlying step count has not moved since 2006 and cannot move: it sits at the generic lower bound for discrete logarithms with auxiliary inputs. What the eight-day contest measured is how much room remained inside a single step — and the published state of the art turned out to be nearly 1.6 bits above the floor.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p class="rule-lab">Sources &amp; caveats</p>
+    <p>Scores and construction details are drawn from the public submission notes on the <code>bls12-381-g1-ecdlp</code> track at <a href="https://www.yukon.org/curvesmash">curvesma.sh</a>, read on 30 October 2026. The track moves fast — 343 submissions and 60 record-setters in eight days — so the frontier may have advanced since.</p>
+    <p>Every entry shown sits at <code>status: review</code> or <code>accepted</code>, meaning it passed automated validity checks. The <code>117.894</code> figure for KKM-accelerated Cheon is a baseline reimplementation under the benchmark's own per-element budgets, 39% target, and 6-fold symmetry reductions rather than a raw number from the 2007 paper.</p>
+    <p>Primary references: Pollard, <em>Monte Carlo methods for index computation (mod p)</em> (Math. Comp. 1978); Cheon, <em>Security analysis of the strong Diffie–Hellman problem</em> (Eurocrypt 2006); Kozaki, Kutsuma &amp; Matsuo, <em>Remarks on Cheon's algorithms for pairing-related problems</em> (Pairing 2007).</p>
+  </div>
+</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var R_LOG2 = 254.8570894130472;
+
+  /* ---------------- ladder ---------------- */
+  var STAGES = [
+    { name:"Pollard rho",        by:null, year:"baseline · no powers used", score:126.5,
+      steps:"2<sup>126.4</sup>", stepsSub:"group operations, 6 classes",
+      cost:"1", costSub:"ignores Aᵢ entirely",
+      what:"The baseline attack without touching the auxiliary powers. Everything the powers and per-step improvements are worth is measured by the bar growth from here down.",
+      delta:null },
+    { name:"Cheon",              by:"Jung Hee Cheon", year:"Eurocrypt 2006", score:125.2,
+      steps:"2<sup>116.66</sup>", stepsSub:"−10 bits in step count (÷√d)",
+      cost:"≈383", costSub:"+8.6 bits per step (O(log r) scalar mul)",
+      what:"Cuts the <b>number of steps by 10 bits</b> (÷√2<sup>20</sup>) by searching the d-th power subgroup H. In Cheon's 2006 analysis, however, each geometric step required a 383-operation binary scalar multiplication (+8.6 bits), eating back most of the 10-bit step reduction until KKM removed the log factor.",
+      delta:"−10 bits in steps, +8.6 bits per step = −1.3 bits net" },
+    { name:"+ KKM tables",       by:"Kozaki, Kutsuma & Matsuo", year:"Pairing 2007 · pre-contest baseline", score:117.894,
+      steps:"2<sup>116.66</sup>", stepsSub:"2N steps (with 39% & 6-fold GLV)",
+      cost:"2.353", costSub:"+1.234 bits (2 adds + 1 Fᵣ mul + ovh)",
+      what:"Replaces the 383-operation scalar multiplication with two precomputed base-r<sup>1/3</sup> table additions, removing the O(log r) factor and unlocking the remaining <b>7.3 bits</b> of Cheon's reduction. Multiplying 2<sup>116.66</sup> steps by 2.353 units/step gives <b>2<sup>117.894</sup>, the exact baseline before curvesma.sh</b>.",
+      delta:"−7.3 bits · log factor removed" },
+    { name:"Additive walk",      by:"gbotrel", year:"23 Oct 2026 · cbadde77", score:116.983,
+      steps:"2<sup>116.66</sup>", stepsSub:"2N steps, K = 0.52",
+      cost:"1.245", costSub:"1 batched affine addition + 0.245 ovh",
+      what:"Drop geometric progressions. Sieve <b>small integers via multiplicative characters χ</b> so neighbours in a bucket differ by a small additive gap, and each step is a single curve addition from a gap table (1.245 units vs KKM's 2.353). 2<sup>16</sup> chains in lockstep share one Montgomery inversion.",
+      delta:"−0.91 bits vs KKM baseline" },
+    { name:"H-prime semiprimes", by:"jungjipdo", year:"24 Oct 2026 · 6ecec8e3", score:116.8271,
+      steps:"2<sup>116.66</sup>", stepsSub:"2N steps, K = 0.52",
+      cost:"≈1.12", costSub:"tighter bookkeeping accounting",
+      what:"A special case of gbotrel's character method with <b>both characters set to 0</b> (a and b both primes in H). Unique prime factorisation makes distinctness automatic without overlap analysis, though H-primes are much rarer; the score improvement came from tighter implementation accounting.",
+      delta:"−0.156 bits" },
+    { name:"Bucket matching",    by:"Yonkoo11", year:"24 Oct 2026 · 0a45ddb2", score:116.79308,
+      steps:"2<sup>116.66</sup>", stepsSub:"2N steps, K = 0.52",
+      cost:"1.090", costSub:"3 routing hops, not 13",
+      what:"The remaining overhead was mostly <b>network routing</b>, not table lookups. With 2<sup>115.66</sup> lookups against 2<sup>84</sup> memory nodes, every node is heavily oversubscribed, so direct-mapped bucket routing replaced per-element path-finding. First package on the track to reach <code>accepted</code>.",
+      delta:"−0.034 bits" },
+    { name:"Sort-based matching", by:"kaankolcu", year:"25 Oct 2026 · 17ed8646", score:116.761224,
+      steps:"2<sup>116.64</sup>", stepsSub:"2N steps, K = 0.4975",
+      cost:"1.087", costSub:"four-pass sort + K retune",
+      what:"A four-pass sort replaces five-pass routing, and <b>K drops from 0.52 to 0.4975</b> — the first submission to stop overshooting the benchmark's required 39% success probability.",
+      delta:"−0.032 bits" },
+    { name:"Overhead trims",     by:"fkiene", year:"26–27 Oct 2026 · b1192292", score:116.736452,
+      steps:"2<sup>116.633</sup>", stepsSub:"2N steps, K = 0.49515",
+      cost:"1.074", costSub:"trimmed per-record bookkeeping",
+      what:"Successive trims on the per-record bookkeeping overhead and a tighter K = 0.49515 right at the 39% success threshold.",
+      delta:"−0.025 bits" },
+    { name:"Twin-output steps",  by:"mpjunior92", year:"27 Oct 2026 · e26c3499 → 54f754e1", score:116.413622,
+      steps:"2<sup>116.65</sup>", stepsSub:"2N steps, K = 0.50",
+      cost:"≈0.85", costSub:"two points per shared inverse",
+      what:"Breaks the one-unit-per-step barrier. From a midpoint P and gap point T, <b>both P+T and P−T come out of one field inversion</b> because T and −T share the same x-coordinate. First package on the board to get the 2-for-1 inversion trick accepted.",
+      delta:"−0.323 bits" },
+    { name:"Planned pair walks", by:"gbotrel", year:"27 Oct 2026 · 2c102f66", score:116.38035,
+      steps:"2<sup>116.65</sup>", stepsSub:"2N steps, K = 0.50",
+      cost:"0.832", costSub:"offline 3-AP planner (f = 0.98)",
+      what:"Combines the character sieve with an <b>offline planner</b> that scans character buckets for symmetric 3-term arithmetic progressions (b−g, b, b+g), emitting 98% of all points in 2-for-1 pairs while handling the 2% orphaned elements.",
+      delta:"−0.033 bits" },
+    { name:"Inlined lane loop",  by:"e-man07", year:"30 Oct 2026 · 63cce2c0", score:116.335493,
+      steps:"2<sup>116.64</sup>", stepsSub:"2N steps, K = 0.496",
+      cost:"0.806", costSub:"inlined paired-addition loop",
+      what:"Eliminates per-lane function-call overhead by running the paired-addition assembly loop once per round across all lanes, combined with pepedesigner's K = 0.496 retune.",
+      delta:"−0.045 bits" }
+  ];
+
+  function fmtScore(v){
+    if(v >= 118) return v.toFixed(1);
+    return v.toFixed(6).replace(/0+$/,"").replace(/\.$/,"");
+  }
+
+  var ladder = document.getElementById("ladder");
+  var readout = document.getElementById("readout");
+  var selected = 3;
+  var zoom = false;
+
+  var WORST_SCORE = STAGES[0].score;
+  var BEST_SCORE  = STAGES[STAGES.length - 1].score;
+
+  function barPct(score){
+    if(zoom){
+      var hi = 117.02;
+      if(score > hi) return null;
+      return Math.max(0, Math.min(100, (hi - score) / (hi - BEST_SCORE) * 100));
+    }
+    return Math.max(0, Math.min(100, (WORST_SCORE - score) / (WORST_SCORE - BEST_SCORE) * 100));
+  }
+
+  function buildLadder(){
+    ladder.textContent = "";
+    STAGES.forEach(function(s, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "rung";
+      b.setAttribute("aria-pressed", String(i === selected));
+      var pct = barPct(s.score);
+
+      var nm = document.createElement("span");
+      nm.className = "rung-name";
+      nm.appendChild(document.createTextNode(s.name));
+      var yr = document.createElement("span");
+      yr.className = "rung-year";
+      if(s.by){
+        var who = document.createElement("span");
+        who.className = "who";
+        who.textContent = s.by;
+        yr.appendChild(who);
+        yr.appendChild(document.createTextNode(" · " + s.year));
+      } else {
+        yr.textContent = s.year;
+      }
+      nm.appendChild(yr);
+
+      var tr = document.createElement("span");
+      tr.className = "track";
+      if(pct === null){
+        var o = document.createElement("span");
+        o.className = "offscale";
+        o.textContent = "off scale →";
+        tr.appendChild(o);
+      } else {
+        var bar = document.createElement("span");
+        bar.className = "bar";
+        bar.style.width = pct + "%";
+        tr.appendChild(bar);
+      }
+
+      var sc = document.createElement("span");
+      sc.className = "rung-score";
+      sc.textContent = fmtScore(s.score);
+
+      b.appendChild(nm); b.appendChild(tr); b.appendChild(sc);
+      b.addEventListener("click", function(){ selected = i; buildLadder(); drawReadout(); });
+      ladder.appendChild(b);
+    });
+  }
+
+  function term(cls, lab, valHtml, subHtml){
+    var d = document.createElement("div");
+    d.className = "term " + cls;
+    var l = document.createElement("span"); l.className = "term-lab"; l.textContent = lab;
+    var v = document.createElement("span"); v.className = "term-val"; v.innerHTML = valHtml;
+    var s = document.createElement("span"); s.className = "term-sub"; s.innerHTML = subHtml;
+    d.appendChild(l); d.appendChild(v); d.appendChild(s);
+    return d;
+  }
+
+  function drawReadout(){
+    var s = STAGES[selected];
+    readout.textContent = "";
+
+    var by = document.createElement("p");
+    by.className = "byline";
+    if(s.by){
+      var w = document.createElement("span");
+      w.className = "who";
+      w.textContent = s.by;
+      by.appendChild(w);
+      by.appendChild(document.createTextNode(" — " + s.year));
+    } else {
+      by.textContent = s.year;
+    }
+    readout.appendChild(by);
+
+    var eq = document.createElement("div");
+    eq.className = "eq";
+    eq.appendChild(term("is-fixed", "step count", s.steps, s.stepsSub));
+    eq.appendChild(term("is-moves", "cost per step", s.cost, s.costSub));
+    eq.appendChild(term("", "score", fmtScore(s.score), "log<sub>2</sub> total work"));
+    readout.appendChild(eq);
+
+    var p = document.createElement("p");
+    p.className = "detail-what";
+    p.innerHTML = s.what;
+    readout.appendChild(p);
+
+    if(s.delta){
+      var d = document.createElement("span");
+      d.className = "delta";
+      d.textContent = s.delta;
+      readout.appendChild(d);
+    }
+  }
+
+  document.getElementById("sc-full").addEventListener("click", function(){
+    zoom = false;
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("sc-zoom").setAttribute("aria-pressed","false");
+    buildLadder();
+  });
+  document.getElementById("sc-zoom").addEventListener("click", function(){
+    zoom = true;
+    this.setAttribute("aria-pressed","true");
+    document.getElementById("sc-full").setAttribute("aria-pressed","false");
+    buildLadder();
+  });
+
+  buildLadder();
+  drawReadout();
+
+  /* ---------------- step-by-step ---------------- */
+  var STEPS = [
+    { tag:"setup", title:"What you are given",
+      formula:"P<sub>0</sub>,  T = [s]P<sub>0</sub>,  A<sub>d</sub> = [s<sup>d</sup>]P<sub>0</sub>",
+      curve:"Three points on BLS12-381 G<sub>1</sub>. The scalar <b>s</b> itself is hidden — you only ever see its image under the one-way map <code>x ↦ [x]P<sub>0</sub></code>. Every test you run must happen on curve points.",
+      cost:"—", unk:254.857 },
+
+    { tag:"setup", title:"Change coordinates: hunt an exponent, not a scalar",
+      formula:"F<sub>r</sub><sup>*</sup> is cyclic of order r − 1.<br>Fix a generator ζ and write &nbsp;<b>s = ζ<sup>k</sup></b>.",
+      curve:"Nothing happens on the curve — this is pure relabelling. Finding <b>s</b> in a group of prime order <code>r</code> becomes finding the integer <b>k</b> modulo <code>r − 1</code>. And unlike <code>r</code>, the number <code>r − 1</code> factors.",
+      cost:"free", unk:254.857 },
+
+    { tag:"setup", title:"Collapse the space with the d-th power map",
+      formula:"d | r − 1,  m = (r − 1)/d<br>s<sup>d</sup> = (ζ<sup>d</sup>)<sup>k</sup>, and ζ<sup>d</sup> has order m<br>⟹ s<sup>d</sup> determines <b>k mod m</b>",
+      curve:"Raising a secret scalar to the <code>d</code>-th power is impossible from <code>[s]P<sub>0</sub></code> alone — which is why the challenge <em>supplying</em> <code>A<sub>d</sub> = [s<sup>d</sup>]P<sub>0</sub></code> is the entire vulnerability. It is your entry into <code>H = ⟨ζ<sup>d</sup>⟩</code>, the subgroup of <code>d</code>-th powers, of order <code>m ≈ 2<sup>234.86</sup></code>.",
+      cost:"free", unk:254.857 },
+
+    { tag:"phase 1", title:"Split the exponent for a meet-in-the-middle",
+      formula:"L = ⌈√m⌉ ≈ 2<sup>117.43</sup><br>k mod m = u + v·L,  0 ≤ u, v &lt; L<br><br>s<sup>d</sup> · (ζ<sup>d</sup>)<sup>−u</sup> = (ζ<sup>d</sup>)<sup>vL</sup>",
+      curve:"Both sides are now computable as curve points: the left from <code>A<sub>d</sub></code> (baby steps), the right from <code>P<sub>0</sub></code> (giant steps). Neither requires knowing <b>s</b>.",
+      cost:"—", unk:254.857 },
+
+    { tag:"phase 1", title:"Meet in the middle inside H",
+      formula:"baby:  [ζ<sup>−du</sup>] A<sub>d</sub> &nbsp; for 0 ≤ u &lt; L  → store<br>giant: [ζ<sup>dvL</sup>] P<sub>0</sub> &nbsp; for 0 ≤ v &lt; L  → probe<br><br>a match gives (u, v) ⟹ <b>k<sub>1</sub> = k mod m = u + vL</b>",
+      curve:"Each list has size <code>L ≈ 2<sup>117.43</sup></code>, so computing both the baby and giant lists evaluates <code>2L ≈ 2<sup>118.43</sup></code> points in textbook BSGS. That loop is the entire cost of the attack.",
+      cost:"2L ≈ 2<sup>118.43</sup> steps", unk:20 },
+
+    { tag:"phase 2", title:"Recover the last 20 bits",
+      formula:"k = k<sub>1</sub> + m·k<sub>2</sub>,  0 ≤ k<sub>2</sub> &lt; d<br>s · ζ<sup>−k<sub>1</sub></sup> = (ζ<sup>m</sup>)<sup>k<sub>2</sub></sup>, where ζ<sup>m</sup> has order d = 2<sup>20</sup>",
+      curve:"A second meet-in-the-middle against <code>T = [s]P<sub>0</sub></code> over the <code>d = 2<sup>20</sup></code> roots of unity, using two lists of size <code>√d = 2<sup>10</sup></code>.",
+      cost:"2√d = 2<sup>11</sup> steps", unk:0 },
+
+    { tag:"finish", title:"Assemble and verify",
+      formula:"k = k<sub>1</sub> + m·k<sub>2</sub><br><b>s = ζ<sup>k</sup> mod r</b>",
+      curve:"Verify that <code>[s]P<sub>0</sub> = T</code> with a single scalar multiplication.",
+      cost:"negligible", unk:0 }
+  ];
+
+  var stepsNav = document.getElementById("steps-nav");
+  var stepBody = document.getElementById("step-body");
+  var step = 0;
+
+  function drawStep(){
+    stepsNav.textContent = "";
+    STEPS.forEach(function(s, i){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "step-dot";
+      b.setAttribute("aria-pressed", String(i === step));
+      b.textContent = (i < 10 ? "0" : "") + i;
+      b.addEventListener("click", function(){ step = i; drawStep(); });
+      stepsNav.appendChild(b);
+    });
+
+    var s = STEPS[step];
+    stepBody.textContent = "";
+
+    var tag = document.createElement("span");
+    tag.className = "step-phase"; tag.textContent = s.tag;
+    stepBody.appendChild(tag);
+
+    var h = document.createElement("h3");
+    h.className = "step-title"; h.textContent = s.title;
+    stepBody.appendChild(h);
+
+    [["in the exponent", s.formula, "formula"],
+     ["on the curve", s.curve, ""],
+     ["cost", s.cost, "cost"]].forEach(function(row){
+      var d = document.createElement("div"); d.className = "step-row";
+      var k = document.createElement("div"); k.className = "step-k"; k.textContent = row[0];
+      var v = document.createElement("div"); v.className = "step-v " + row[2];
+      v.innerHTML = row[1];
+      d.appendChild(k); d.appendChild(v);
+      stepBody.appendChild(d);
+    });
+
+    var pct = s.unk <= 0 ? 0 : Math.max(0.8, (s.unk / 254.857) * 100);
+    document.getElementById("unk-fill").style.width = pct + "%";
+    document.getElementById("unk-val").innerHTML =
+      s.unk <= 0 ? "1 — solved" : "2<sup>" + (s.unk === 20 ? "20" : s.unk.toFixed(2)) + "</sup>";
+
+    document.getElementById("step-prev").disabled = (step === 0);
+    document.getElementById("step-next").disabled = (step === STEPS.length - 1);
+  }
+
+  document.getElementById("step-prev").addEventListener("click", function(){ if(step > 0){ step--; drawStep(); } });
+  document.getElementById("step-next").addEventListener("click", function(){ if(step < STEPS.length - 1){ step++; drawStep(); } });
+  drawStep();
+
+  /* ---------------- d slider ---------------- */
+
+  var chart = document.getElementById("dchart");
+  var slider = document.getElementById("dslider");
+
+  function totalLog2(e){
+    var p1 = (R_LOG2 - e) / 2 + 1, p2 = e / 2 + 1;
+    return Math.log2(Math.pow(2, p1) + Math.pow(2, p2));
+  }
+
+  function svgEl(n, attrs){
+    var el = document.createElementNS("http://www.w3.org/2000/svg", n);
+    for(var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function svgPowText(attrs, base, expStr, suffix){
+    var t = svgEl("text", attrs);
+    t.appendChild(document.createTextNode(base));
+    var sp = svgEl("tspan", { dy: "-4", "font-size": "7.5" });
+    sp.textContent = expStr;
+    t.appendChild(sp);
+    if(suffix){
+      var rest = svgEl("tspan", { dy: "4" });
+      rest.textContent = suffix;
+      t.appendChild(rest);
+    }
+    return t;
+  }
+
+  var W = 520, H = 190, PADL = 44, PADR = 10, PADT = 14, PADB = 34;
+  function xOf(e){ return PADL + (e / 32) * (W - PADL - PADR); }
+  function yOf(v){
+    var lo = 111, hi = 129;
+    return PADT + (hi - v) / (hi - lo) * (H - PADT - PADB);
+  }
+
+  function drawChart(){
+    chart.textContent = "";
+    var e = Number(slider.value);
+
+    // unavailable region beyond 2^20
+    chart.appendChild(svgEl("rect", {
+      x: xOf(20), y: PADT, width: xOf(32) - xOf(20), height: H - PADT - PADB,
+      fill: "currentColor", opacity: ".06"
+    }));
+
+    // axes
+    chart.appendChild(svgEl("line", { x1:PADL, y1:H-PADB, x2:W-PADR, y2:H-PADB, stroke:"currentColor", "stroke-width":1, opacity:".35" }));
+    [113,119,125].forEach(function(v){
+      chart.appendChild(svgEl("line", { x1:PADL, y1:yOf(v), x2:W-PADR, y2:yOf(v), stroke:"currentColor", "stroke-width":1, opacity:".12" }));
+      chart.appendChild(svgPowText({
+        x:PADL-7, y:yOf(v)+3.5, "text-anchor":"end", "font-family":"IBM Plex Mono, monospace", "font-size":"10", fill:"currentColor", opacity:".6"
+      }, "2", String(v), ""));
+    });
+
+    // curve
+    var pts = [];
+    for(var i = 0; i <= 32; i++) pts.push(xOf(i).toFixed(1) + "," + yOf(totalLog2(i)).toFixed(1));
+    chart.appendChild(svgEl("polyline", { points: pts.join(" "), fill:"none", stroke:"currentColor", "stroke-width":1.8, opacity:".55" }));
+
+    // supply limit
+    chart.appendChild(svgEl("line", { x1:xOf(20), y1:PADT, x2:xOf(20), y2:H-PADB, stroke:"currentColor", "stroke-width":1, "stroke-dasharray":"3 3", opacity:".5" }));
+    chart.appendChild(svgPowText({
+      x:xOf(20)+5, y:PADT+11, "font-family":"IBM Plex Mono, monospace", "font-size":"9.5", fill:"currentColor", opacity:".6"
+    }, "n = 2", "20", ""));
+
+    // marker
+    var feasible = e <= 20;
+    var col = feasible ? "#3D5A80" : "#B5316B";
+    chart.appendChild(svgEl("line", { x1:xOf(e), y1:yOf(totalLog2(e)), x2:xOf(e), y2:H-PADB, stroke:col, "stroke-width":1.3, opacity:".55" }));
+    chart.appendChild(svgEl("circle", { cx:xOf(e), cy:yOf(totalLog2(e)), r:5, fill:col }));
+
+    chart.appendChild(svgPowText({
+      x:PADL, y:H-PADB+16, "font-family":"IBM Plex Mono, monospace", "font-size":"10", fill:"currentColor", opacity:".6"
+    }, "d = 2", "0", ""));
+    chart.appendChild(svgPowText({
+      x:W-PADR, y:H-PADB+16, "text-anchor":"end", "font-family":"IBM Plex Mono, monospace", "font-size":"10", fill:"currentColor", opacity:".6"
+    }, "2", "32", " · the 2-adic limit of r−1"));
+  }
+
+  function updateD(){
+    var e = Number(slider.value);
+    var p1 = (R_LOG2 - e) / 2 + 1, p2 = e / 2 + 1, tot = totalLog2(e);
+    document.getElementById("d-d").innerHTML   = "2<sup>" + e + "</sup>";
+    document.getElementById("d-p1").innerHTML  = "2<sup>" + p1.toFixed(2) + "</sup>";
+    document.getElementById("d-p2").innerHTML  = "2<sup>" + p2.toFixed(2) + "</sup>";
+    document.getElementById("d-tot").innerHTML = "2<sup>" + tot.toFixed(2) + "</sup>";
+    var v = document.getElementById("d-verdict");
+    if(e <= 20){
+      v.className = "verdict ok";
+      v.innerHTML = "Feasible. 2<sup>" + e + "</sup> divides r−1, and the challenge supplies A<sub>d</sub> = [s<sup>d</sup>]P<sub>0</sub>.";
+    } else {
+      v.className = "verdict no";
+      v.innerHTML = "Unavailable. Deriving [s<sup>d</sup>]P<sub>0</sub> for d = 2<sup>" + e + "</sup> past n = 2<sup>20</sup> is the computational Diffie–Hellman problem.";
+    }
+    drawChart();
+  }
+
+  slider.addEventListener("input", updateD);
+  updateD();
+})();
+</script>
+
+</body></html>
